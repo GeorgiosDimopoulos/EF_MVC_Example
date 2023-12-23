@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcWebExample_DataAccess.Data;
 
@@ -11,9 +12,11 @@ using MvcWebExample_DataAccess.Data;
 namespace MvcWebExample_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231223175626_addOneToOneRelationForFluentBookAndFluentBookDetailToDb")]
+    partial class addOneToOneRelationForFluentBookAndFluentBookDetailToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,20 +223,20 @@ namespace MvcWebExample_DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Book_Id"));
 
+                    b.Property<int?>("Fluent_PublisherPublisher_Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("ISBN")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("Publisher_Id")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Book_Id");
 
-                    b.HasIndex("Publisher_Id");
+                    b.HasIndex("Fluent_PublisherPublisher_Id");
 
                     b.ToTable("Fluent_Books");
                 });
@@ -343,13 +346,9 @@ namespace MvcWebExample_DataAccess.Migrations
 
             modelBuilder.Entity("MvcWebExample_Data.Models.Things.Fluent_Book", b =>
                 {
-                    b.HasOne("MvcWebExample_Data.Models.People.Fluent_Publisher", "Publisher")
+                    b.HasOne("MvcWebExample_Data.Models.People.Fluent_Publisher", null)
                         .WithMany("Books")
-                        .HasForeignKey("Publisher_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Publisher");
+                        .HasForeignKey("Fluent_PublisherPublisher_Id");
                 });
 
             modelBuilder.Entity("MvcWebExample_Data.Models.Things.Fluent_BookDetail", b =>

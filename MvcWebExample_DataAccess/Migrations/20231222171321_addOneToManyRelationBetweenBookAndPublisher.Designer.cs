@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcWebExample_DataAccess.Data;
 
@@ -11,9 +12,11 @@ using MvcWebExample_DataAccess.Data;
 namespace MvcWebExample_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231222171321_addOneToManyRelationBetweenBookAndPublisher")]
+    partial class addOneToManyRelationBetweenBookAndPublisher
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace MvcWebExample_DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("AuthorBook", b =>
-                {
-                    b.Property<int>("AuthorsAuthor_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BooksBook_Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("AuthorsAuthor_Id", "BooksBook_Id");
-
-                    b.HasIndex("BooksBook_Id");
-
-                    b.ToTable("AuthorBook");
-                });
 
             modelBuilder.Entity("MvcWebExample_Data.Models.People.Author", b =>
                 {
@@ -65,54 +53,6 @@ namespace MvcWebExample_DataAccess.Migrations
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("MvcWebExample_Data.Models.People.Fluent_Author", b =>
-                {
-                    b.Property<int>("Author_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Author_Id"));
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Author_Id");
-
-                    b.ToTable("Fluent_Authors");
-                });
-
-            modelBuilder.Entity("MvcWebExample_Data.Models.People.Fluent_Publisher", b =>
-                {
-                    b.Property<int>("Publisher_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Publisher_Id"));
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Publisher_Id");
-
-                    b.ToTable("Fluent_Publishers");
-                });
-
             modelBuilder.Entity("MvcWebExample_Data.Models.People.Publisher", b =>
                 {
                     b.Property<int>("Publisher_Id")
@@ -138,11 +78,11 @@ namespace MvcWebExample_DataAccess.Migrations
 
             modelBuilder.Entity("MvcWebExample_Data.Models.Things.Book", b =>
                 {
-                    b.Property<int>("Book_Id")
+                    b.Property<int>("BookId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Book_Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"));
 
                     b.Property<string>("ISBN")
                         .IsRequired()
@@ -159,7 +99,7 @@ namespace MvcWebExample_DataAccess.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Book_Id");
+                    b.HasKey("BookId");
 
                     b.HasIndex("Publisher_Id");
 
@@ -168,7 +108,7 @@ namespace MvcWebExample_DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Book_Id = 1,
+                            BookId = 1,
                             ISBN = "123123",
                             Price = 10m,
                             Publisher_Id = 1,
@@ -176,7 +116,7 @@ namespace MvcWebExample_DataAccess.Migrations
                         },
                         new
                         {
-                            Book_Id = 2,
+                            BookId = 2,
                             ISBN = "121123",
                             Price = 11m,
                             Publisher_Id = 1,
@@ -210,59 +150,6 @@ namespace MvcWebExample_DataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("BookDetails");
-                });
-
-            modelBuilder.Entity("MvcWebExample_Data.Models.Things.Fluent_Book", b =>
-                {
-                    b.Property<int>("Book_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Book_Id"));
-
-                    b.Property<string>("ISBN")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("Publisher_Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Book_Id");
-
-                    b.HasIndex("Publisher_Id");
-
-                    b.ToTable("Fluent_Books");
-                });
-
-            modelBuilder.Entity("MvcWebExample_Data.Models.Things.Fluent_BookDetail", b =>
-                {
-                    b.Property<int>("BookDetail_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookDetail_Id"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfChapters")
-                        .HasColumnType("int")
-                        .HasColumnName("NoOfChapters");
-
-                    b.Property<string>("Weight")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("BookDetail_Id");
-
-                    b.HasIndex("BookId")
-                        .IsUnique();
-
-                    b.ToTable("Fluent_BookDetail", (string)null);
                 });
 
             modelBuilder.Entity("MvcWebExample_Data.Models.Things.Genre", b =>
@@ -304,25 +191,10 @@ namespace MvcWebExample_DataAccess.Migrations
                     b.ToTable("SubCategories");
                 });
 
-            modelBuilder.Entity("AuthorBook", b =>
-                {
-                    b.HasOne("MvcWebExample_Data.Models.People.Author", null)
-                        .WithMany()
-                        .HasForeignKey("AuthorsAuthor_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MvcWebExample_Data.Models.Things.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksBook_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MvcWebExample_Data.Models.Things.Book", b =>
                 {
                     b.HasOne("MvcWebExample_Data.Models.People.Publisher", "Publisher")
-                        .WithMany("Books")
+                        .WithMany()
                         .HasForeignKey("Publisher_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -341,44 +213,7 @@ namespace MvcWebExample_DataAccess.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("MvcWebExample_Data.Models.Things.Fluent_Book", b =>
-                {
-                    b.HasOne("MvcWebExample_Data.Models.People.Fluent_Publisher", "Publisher")
-                        .WithMany("Books")
-                        .HasForeignKey("Publisher_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Publisher");
-                });
-
-            modelBuilder.Entity("MvcWebExample_Data.Models.Things.Fluent_BookDetail", b =>
-                {
-                    b.HasOne("MvcWebExample_Data.Models.Things.Fluent_Book", "Book")
-                        .WithOne("BookDetail")
-                        .HasForeignKey("MvcWebExample_Data.Models.Things.Fluent_BookDetail", "BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("MvcWebExample_Data.Models.People.Fluent_Publisher", b =>
-                {
-                    b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("MvcWebExample_Data.Models.People.Publisher", b =>
-                {
-                    b.Navigation("Books");
-                });
-
             modelBuilder.Entity("MvcWebExample_Data.Models.Things.Book", b =>
-                {
-                    b.Navigation("BookDetail");
-                });
-
-            modelBuilder.Entity("MvcWebExample_Data.Models.Things.Fluent_Book", b =>
                 {
                     b.Navigation("BookDetail");
                 });
